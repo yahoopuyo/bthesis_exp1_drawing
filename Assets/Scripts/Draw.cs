@@ -31,7 +31,9 @@ public class Draw : MonoBehaviour
     public GameObject slider;
     public GameObject mng;
 
-    public Manager manager;
+    private Manager manager;
+    private UndoRedo undoredo;
+
     private bool touch = false;
 
     private int width;
@@ -46,11 +48,11 @@ public class Draw : MonoBehaviour
         width = Screen.width;
         height = Screen.height;
         manager = mng.GetComponent<Manager>();
-       
+        undoredo = mng.GetComponent<UndoRedo>();
         slider_x = width * manager.x_line;
         slider_y = height * manager.y_line;
-        UnityEngine.Debug.Log(width);
-        UnityEngine.Debug.Log(height);
+        //UnityEngine.Debug.Log(width);
+        //UnityEngine.Debug.Log(height);
        
         worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
     }
@@ -99,6 +101,9 @@ public class Draw : MonoBehaviour
 
         // 追加するオブジェクトをインスタンス
         GameObject lineObject = new GameObject();
+
+        //undo用にオブジェクトを格納
+        undoredo.AddObject(lineObject);
 
         // オブジェクトにLineRendererを取り付ける
         lineObject.AddComponent<LineRenderer>();

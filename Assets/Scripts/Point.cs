@@ -8,6 +8,10 @@ public class Point : MonoBehaviour
     public GameObject circlea;
     public GameObject circleb;
     public GameObject circlec;
+
+    public GameObject cLineHorizontal;
+    public GameObject cLineVertical;
+
     public GameObject mng;
 
     public Manager manager;
@@ -26,6 +30,8 @@ public class Point : MonoBehaviour
         circlea.SetActive(false);
         circleb.SetActive(false);
         circlec.SetActive(false);
+        cLineVertical.SetActive(false);
+        cLineHorizontal.SetActive(false);
         manager = mng.GetComponent<Manager>();
         toucha = false;
         touchb = false;
@@ -79,13 +85,28 @@ public class Point : MonoBehaviour
 
             if (Input.GetMouseButtonUp(0))
             {
-                if (toucha) toucha = false;
-                if (touchb) touchb = false;
-                if (touchc) touchc = false;
+                if (toucha)
+                {
+                    toucha = false;
+                    cLineVertical.SetActive(false);
+                    cLineHorizontal.SetActive(false);
+                }
+                if (touchb)
+                {
+                    touchb = false;
+                    cLineVertical.SetActive(false);
+                    cLineHorizontal.SetActive(false);
+                }
+                if (touchc)
+                {
+                    touchc = false;
+                    cLineVertical.SetActive(false);
+                    cLineHorizontal.SetActive(false);
+                }
             }
 
             
-            if (toucha)
+            if (toucha) //もし左上がタッチされていたら
             {
                 Vector3 mp = Input.mousePosition;
                 mp.z = Camera.main.nearClipPlane + 1.0f;
@@ -93,15 +114,45 @@ public class Point : MonoBehaviour
                 
                 if (mp.x < local_x && mp.y > local_y) circlea.GetComponent<Transform>().position = worldMp;
                 else circlea.SetActive(false);
+
+                if(circleb.activeSelf) //側面図が選択済みなら側面図を動かす。
+                {
+                    Vector3 bwp = circleb.GetComponent<Transform>().position;
+                    bwp.x = worldMp.x;
+                    circleb.GetComponent<Transform>().position = bwp;
+                    cLineVertical.SetActive(true);
+                    cLineVertical.GetComponent<Transform>().position = new Vector3(worldMp.x,0, 0);
+                }
             }
-            if (touchb)
+            if (touchb) //もし左下がたっちされていたら
             {
                 Vector3 mp = Input.mousePosition;
                 mp.z = Camera.main.nearClipPlane + 1.0f;
                 Vector3 worldMp = Camera.main.ScreenToWorldPoint(mp);
 
-                if (mp.x < local_x && mp.y < local_y) circleb.GetComponent<Transform>().position = worldMp;
+                if (mp.x < local_x && mp.y < local_y)
+                {
+                    
+                    if (circlea.activeSelf) //上面点が選択済みなら補助線をひく
+                    {
+                        cLineVertical.SetActive(true);
+                        float ax = circlea.GetComponent<Transform>().position.x;
+                        cLineVertical.GetComponent<Transform>().position = new Vector3 (ax,0,0);
+                        worldMp.x = ax;
+                    }
+                    circleb.GetComponent<Transform>().position = worldMp;
+                }
+                    
                 else circleb.SetActive(false);
+
+                if (circlec.activeSelf) //正面図が選択済みなら側面図を動かす。
+                {
+                    Vector3 cwp = circlec.GetComponent<Transform>().position;
+                    cwp.y = worldMp.y;
+                    circlec.GetComponent<Transform>().position = cwp;
+                    cLineHorizontal.SetActive(true);
+                    cLineHorizontal.GetComponent<Transform>().position = new Vector3(0, worldMp.y, 0);
+                }
             }
             if (touchc)
             {
@@ -109,7 +160,17 @@ public class Point : MonoBehaviour
                 mp.z = Camera.main.nearClipPlane + 1.0f;
                 Vector3 worldMp = Camera.main.ScreenToWorldPoint(mp);
 
-                if (mp.x > local_x && mp.y < local_y) circlec.GetComponent<Transform>().position = worldMp;
+                if (mp.x > local_x && mp.y < local_y)
+                {
+                    if (circleb.activeSelf) //側面点が選択済みなら補助線をひく
+                    {
+                        cLineHorizontal.SetActive(true);
+                        float by = circleb.GetComponent<Transform>().position.y;
+                        cLineHorizontal.GetComponent<Transform>().position = new Vector3(0, by, 0);
+                        worldMp.y = by;
+                    }
+                    circlec.GetComponent<Transform>().position = worldMp;
+                }
                 else circlec.SetActive(false);
             }
         }
