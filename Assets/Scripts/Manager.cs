@@ -1,22 +1,56 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Security;
 using System.Security.Cryptography;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Manager : MonoBehaviour
 {
     private bool area;
     private bool point;
+    private int subjectNum = 0;//被験者番号
+    private string option = "Practice";  //刺激位置
+    private int currentNum = 0;
+
     public float x_line;
     public float y_line;
     public float local_x;
     public float local_y;
     public GameObject linex;
     public GameObject liney;
+    public GameObject inputText;
+    public GameObject optionText;
+    public GameObject currentNumText;
+    public List<GameObject> electrodes;
+    //access instances
 
-
+    public void ClearElectrodes()
+    {
+        foreach(GameObject el in electrodes)
+        {
+            el.SetActive(false);
+        }
+    }
+    public string Option()
+    {
+        return option;
+    }
+    public int SubjectNum()
+    {
+        return subjectNum;
+    }
+    public int CurrentNum()
+    {
+        return currentNum;
+    }
+    public void UpdateCurrentNum(int i)
+    {
+        currentNum = i;
+        currentNumText.GetComponent<Text>().text = (currentNum+1).ToString();
+    }
     public bool IsArea()
     {
         return area;
@@ -25,6 +59,8 @@ public class Manager : MonoBehaviour
     {
         return point;
     }
+
+    //Interaction w/ UI
 
     public void OnClickArea()
     {
@@ -37,6 +73,49 @@ public class Manager : MonoBehaviour
         area = false;
         point = true;
     }
+    public void OnUpdateNum()
+    {
+        string txt = inputText.GetComponent<Text>().text;
+        subjectNum = Int32.Parse(txt);
+        //UnityEngine.Debug.Log(num);
+    }
+
+    public void OnChangeOption()
+    {
+        option = optionText.GetComponent<Text>().text;
+        UpdateCurrentNum(0);
+        switch (option)
+        {
+            case "ulnar_wrist":
+                ClearElectrodes();
+                electrodes[0].SetActive(true);
+                break;
+            case "ulnar_elbow":
+                ClearElectrodes();
+                electrodes[1].SetActive(true);
+                break;
+            case "ulnar_armpit":
+                ClearElectrodes();
+                electrodes[2].SetActive(true);
+                break;
+            case "median_wrist":
+                ClearElectrodes();
+                electrodes[3].SetActive(true);
+                break;
+            case "median_elbow":
+                ClearElectrodes();
+                electrodes[4].SetActive(true);
+                break;
+            case "median_armpit":
+                ClearElectrodes();
+                electrodes[5].SetActive(true);
+                break;
+            default:
+                ClearElectrodes();
+                break;
+        }
+    }
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -53,6 +132,7 @@ public class Manager : MonoBehaviour
         wpy.y = 0;
         linex.GetComponent<Transform>().position = wpx;
         liney.GetComponent<Transform>().position = wpy;
+
         //UnityEngine.Debug.Log(Camera.main.ScreenToWorldPoint(lpx));
         //UnityEngine.Debug.Log(Camera.main.ScreenToWorldPoint(lpy));
     }

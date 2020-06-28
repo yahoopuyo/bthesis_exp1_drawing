@@ -105,6 +105,9 @@ public class Draw : MonoBehaviour
         //undo用にオブジェクトを格納
         undoredo.AddObject(lineObject);
 
+        //reset様にオブジェクトを格納
+        mng.GetComponent<Save>().AddToArea(lineObject);
+
         // オブジェクトにLineRendererを取り付ける
         lineObject.AddComponent<LineRenderer>();
 
