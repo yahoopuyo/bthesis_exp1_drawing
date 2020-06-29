@@ -41,7 +41,7 @@ public class Draw : MonoBehaviour
     private float slider_x;
     private float slider_y;
     private Vector3 worldPosition;
-    void Awake()
+    void Start()
     {
         lineRendererList = new List<LineRenderer>();
         lineWidth = 0.05f;
@@ -71,9 +71,12 @@ public class Draw : MonoBehaviour
         {
             float x = Input.mousePosition.x;
             float y = Input.mousePosition.y;
-            if (!(y > slider_y && x > slider_x))
+            int a = x > slider_x ? 1 : 0;
+            int b = y > slider_y ? 1 : 0;
+            int select = a + 2 * b;
+            if (select != 3)
             {
-                this.AddLineObject();
+                this.AddLineObject(select);
                 touch = true;
             }
             worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -96,18 +99,30 @@ public class Draw : MonoBehaviour
     /// <summary>
     /// 線オブジェクトの追加を行うメソッド
     /// </summary>
-    private void AddLineObject()
+    private void AddLineObject(int pos)
     {
 
         // 追加するオブジェクトをインスタンス
         GameObject lineObject = new GameObject();
 
-        //undo用にオブジェクトを格納
+        //描画されているものを格納
         undoredo.AddObject(lineObject);
-
-        //reset様にオブジェクトを格納
-        mng.GetComponent<Save>().AddToArea(lineObject);
-
+        
+        //分別
+        switch (pos)
+        {
+            case 0:
+                undoredo.AddToSide(lineObject);
+                break;
+            case 1:
+                undoredo.AddToFront(lineObject);
+                break;
+            case 2:
+                undoredo.AddToTop(lineObject);
+                break;
+            default:
+                break;
+        }
         // オブジェクトにLineRendererを取り付ける
         lineObject.AddComponent<LineRenderer>();
 
@@ -135,7 +150,7 @@ public class Draw : MonoBehaviour
     {
 
         // 座標の変換を行いマウス位置を取得
-        Vector3 screenPosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.nearClipPlane + 5.0f);
+        Vector3 screenPosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.nearClipPlane + 100.0f);
         var mousePosition = Camera.main.ScreenToWorldPoint(screenPosition);
 
         // 線と線をつなぐ点の数を更新

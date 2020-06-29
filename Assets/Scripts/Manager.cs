@@ -34,6 +34,39 @@ public class Manager : MonoBehaviour
             el.SetActive(false);
         }
     }
+    public void ShowElectrodes(string option_in)
+    {
+        switch (option_in)
+        {
+            case "ulnar_wrist":
+                ClearElectrodes();
+                electrodes[0].SetActive(true);
+                break;
+            case "ulnar_elbow":
+                ClearElectrodes();
+                electrodes[1].SetActive(true);
+                break;
+            case "ulnar_armpit":
+                ClearElectrodes();
+                electrodes[2].SetActive(true);
+                break;
+            case "median_wrist":
+                ClearElectrodes();
+                electrodes[3].SetActive(true);
+                break;
+            case "median_elbow":
+                ClearElectrodes();
+                electrodes[4].SetActive(true);
+                break;
+            case "median_armpit":
+                ClearElectrodes();
+                electrodes[5].SetActive(true);
+                break;
+            default:
+                ClearElectrodes();
+                break;
+        }
+    }
     public string Option()
     {
         return option;
@@ -84,36 +117,7 @@ public class Manager : MonoBehaviour
     {
         option = optionText.GetComponent<Text>().text;
         UpdateCurrentNum(0);
-        switch (option)
-        {
-            case "ulnar_wrist":
-                ClearElectrodes();
-                electrodes[0].SetActive(true);
-                break;
-            case "ulnar_elbow":
-                ClearElectrodes();
-                electrodes[1].SetActive(true);
-                break;
-            case "ulnar_armpit":
-                ClearElectrodes();
-                electrodes[2].SetActive(true);
-                break;
-            case "median_wrist":
-                ClearElectrodes();
-                electrodes[3].SetActive(true);
-                break;
-            case "median_elbow":
-                ClearElectrodes();
-                electrodes[4].SetActive(true);
-                break;
-            case "median_armpit":
-                ClearElectrodes();
-                electrodes[5].SetActive(true);
-                break;
-            default:
-                ClearElectrodes();
-                break;
-        }
+        ShowElectrodes(option);
     }
 
     // Start is called before the first frame update
