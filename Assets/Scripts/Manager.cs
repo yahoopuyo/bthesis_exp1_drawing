@@ -26,7 +26,6 @@ public class Manager : MonoBehaviour
     public GameObject currentNumText;
     public List<GameObject> electrodes;
     //access instances
-
     public void ClearElectrodes()
     {
         foreach(GameObject el in electrodes)
@@ -112,7 +111,16 @@ public class Manager : MonoBehaviour
         subjectNum = Int32.Parse(txt);
         //UnityEngine.Debug.Log(num);
     }
-
+    public void OnClickUp()
+    {
+        if(currentNum < 4) currentNum++;
+        currentNumText.GetComponent<Text>().text = (currentNum+1).ToString();
+    }
+    public void OnClickDown()
+    {
+        if (currentNum > 0) currentNum--;
+        currentNumText.GetComponent<Text>().text = (currentNum+1).ToString();
+    }
     public void OnChangeOption()
     {
         option = optionText.GetComponent<Text>().text;
@@ -136,6 +144,7 @@ public class Manager : MonoBehaviour
         wpy.y = 0;
         linex.GetComponent<Transform>().position = wpx;
         liney.GetComponent<Transform>().position = wpy;
+
 
         //UnityEngine.Debug.Log(Camera.main.ScreenToWorldPoint(lpx));
         //UnityEngine.Debug.Log(Camera.main.ScreenToWorldPoint(lpy));
