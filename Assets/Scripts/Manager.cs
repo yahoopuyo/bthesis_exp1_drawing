@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography;
 using UnityEngine;
@@ -9,11 +10,13 @@ using UnityEngine.UI;
 
 public class Manager : MonoBehaviour
 {
+    //public int exp_num = 1;
     private bool area;
     private bool point;
     private int subjectNum = 0;//被験者番号
     private string option = "Practice";  //刺激位置
     private int currentNum = 0;
+    private string inputBoxTxt;
 
     public float x_line;
     public float y_line;
@@ -72,11 +75,16 @@ public class Manager : MonoBehaviour
     }
     public int SubjectNum()
     {
+        subjectNum = Int32.Parse(inputBoxTxt);
         return subjectNum;
     }
     public int CurrentNum()
     {
         return currentNum;
+    }
+    public string InputBox()
+    {
+        return inputBoxTxt;
     }
     public void UpdateCurrentNum(int i)
     {
@@ -107,10 +115,10 @@ public class Manager : MonoBehaviour
     }
     public void OnUpdateNum()
     {
-        string txt = inputText.GetComponent<Text>().text;
-        subjectNum = Int32.Parse(txt);
+        inputBoxTxt = inputText.GetComponent<Text>().text;
         //UnityEngine.Debug.Log(num);
     }
+
     public void OnClickUp()
     {
         if(currentNum < 4) currentNum++;
