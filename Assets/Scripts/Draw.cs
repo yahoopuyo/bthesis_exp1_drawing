@@ -40,6 +40,7 @@ public class Draw : MonoBehaviour
     private int height;
     private float slider_x;
     private float slider_y;
+    private float canvas_y;
     private Vector3 worldPosition;
     void Start()
     {
@@ -49,8 +50,9 @@ public class Draw : MonoBehaviour
         height = Screen.height;
         manager = mng.GetComponent<Manager>();
         undoredo = mng.GetComponent<UndoRedo>();
-        slider_x = width * manager.x_line;
-        slider_y = height * manager.y_line;
+        slider_x = manager.local_x;
+        slider_y = manager.local_y;
+        canvas_y = manager.local_canvas_y;
         //UnityEngine.Debug.Log(width);
         //UnityEngine.Debug.Log(height);
        
@@ -65,7 +67,6 @@ public class Draw : MonoBehaviour
     void Update()
     {
         
-
         // ボタンが押された時に線オブジェクトの追加を行う
         if (Input.GetMouseButtonDown(0) && manager.IsArea())
         {
@@ -73,8 +74,11 @@ public class Draw : MonoBehaviour
             float y = Input.mousePosition.y;
             int a = x > slider_x ? 1 : 0;
             int b = y > slider_y ? 1 : 0;
-            int select = a + 2 * b;
-            if (select != 3)
+
+            bool OnCanvas = y > canvas_y ? false : true;
+            int select = a + 2 * b;//どこに触っているかを判断、四分割
+            
+            if (select != 3 && OnCanvas)
             {
                 this.AddLineObject(select);
                 touch = true;

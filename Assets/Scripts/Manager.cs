@@ -17,17 +17,27 @@ public class Manager : MonoBehaviour
     private string option = "Practice";  //刺激位置
     private int currentNum = 0;
     private string inputBoxTxt;
+    private int pair1Index = 0;
+    // private int pair2Index = 0;
 
+    private const int POS_MAX = 10;//実験２，位置条件の数(練習含めず)
+    private string[] alphabets = { "P", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l" };
+    
     public float x_line;
     public float y_line;
+    public float y_canvas;//画面上のボタン、input fieldの識別用
     public float local_x;
     public float local_y;
+    public float local_canvas_y;
     public GameObject linex;
     public GameObject liney;
     public GameObject inputText;
     public GameObject optionText;
     public GameObject currentNumText;
+    public GameObject pair1Text;
+    // public GameObject pair2Text;
     public List<GameObject> electrodes;
+
     //access instances
     public void ClearElectrodes()
     {
@@ -91,6 +101,23 @@ public class Manager : MonoBehaviour
         currentNum = i;
         currentNumText.GetComponent<Text>().text = (currentNum+1).ToString();
     }
+    // for exp 2
+
+    public string Pair1()
+    {
+        return alphabets[pair1Index];
+    }
+    public void ResetPair1()
+    {
+        pair1Index = 0;
+        pair1Text.GetComponent<Text>().text = "P";
+    }
+    /*
+    public string Pair2()
+    {
+        return alphabets[pair2Index];
+    }
+    */
     public bool IsArea()
     {
         return area;
@@ -118,7 +145,6 @@ public class Manager : MonoBehaviour
         inputBoxTxt = inputText.GetComponent<Text>().text;
         //UnityEngine.Debug.Log(num);
     }
-
     public void OnClickUp()
     {
         if(currentNum < 4) currentNum++;
@@ -129,6 +155,30 @@ public class Manager : MonoBehaviour
         if (currentNum > 0) currentNum--;
         currentNumText.GetComponent<Text>().text = (currentNum+1).ToString();
     }
+    public void OnClickUpPair1()
+    {
+        if (pair1Index < POS_MAX) pair1Index++;
+        pair1Text.GetComponent<Text>().text = alphabets[pair1Index];
+    }
+    public void OnClickDownPair1()
+    {
+        if (pair1Index > 0) pair1Index--;
+        pair1Text.GetComponent<Text>().text = alphabets[pair1Index];
+    }
+
+    /*
+    public void OnClickUpPair2()
+    {
+        if (pair2Index < POS_MAX) pair2Index++;
+        pair2Text.GetComponent<Text>().text = alphabets[pair2Index];
+    }
+    public void OnClickDownPair2()
+    {
+        if (pair2Index > 0) pair2Index--;
+        pair2Text.GetComponent<Text>().text = alphabets[pair2Index];
+    }
+    */
+
     public void OnChangeOption()
     {
         option = optionText.GetComponent<Text>().text;
@@ -143,6 +193,7 @@ public class Manager : MonoBehaviour
         point = false;
         local_x = Screen.width * x_line;
         local_y = Screen.height* y_line;
+        local_canvas_y = Screen.height * y_canvas;
 
         Vector3 lpx = new Vector3 (0, local_y, Camera.main.nearClipPlane + 3.0f);
         Vector3 lpy = new Vector3(local_x , 0, Camera.main.nearClipPlane + 1.0f);

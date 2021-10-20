@@ -22,7 +22,7 @@ public class Save_exp2: MonoBehaviour
     private Manager manager;
     private UndoRedo ud;
 
-    private string hpath = "C:/Users/yahoo/cyberlab/thesis/exp2/pre/";
+    private string hpath = "C:/Users/yahoo/cyberlab/thesis/exp2/Record/";
     private string lpath;
 
     private void Reset()
@@ -67,20 +67,76 @@ public class Save_exp2: MonoBehaviour
     public async void OnClickSave()
     {
         //name of file
-        string lpath = manager.InputBox();
-        DateTime dt = DateTime.Now;
-        string result = dt.ToString("MM_dd_");
-        string path = hpath + result + lpath;
+        string subject = manager.InputBox();
+        // DateTime dt = DateTime.Now;
+        // string result = dt.ToString("MM_dd_");
+        int current = manager.CurrentNum();
+        string pair1 = manager.Pair1();
+        // string pair2 = manager.Pair2();
+        bool practice = (pair1 == "P");
+        string path;
+        if (practice)
+        {
+            path = hpath + "subject" + subject + "/practice" + "_" + current.ToString();
+        }
+        else
+        {
+            path = hpath + "subject" + subject + "/" + pair1 +  "_" + current.ToString();
+        }
         string filename;
         Areas = ud.AreasAll();
-        
+
+        if (subject != "0" || practice)
+        {
+            if (Areas.Count < 3) return;
+            foreach (GameObject point in points) if (!point.activeSelf) return;
+        }
+
+        if (current < 4)
+        {
+            manager.UpdateCurrentNum(current + 1);
+        }
+        else
+        {
+            manager.UpdateCurrentNum(0);
+            manager.ResetPair1();//Pairの表示をPにリセットする(fail safe)
+        }
+
         Debug.Log(path);
+
+
+        //record point coordinate
+        StreamWriter file;
+        if (current == 0) file = new StreamWriter(hpath + "subject" + subject + "/" + pair1 + "_result.csv", false, Encoding.UTF8);
+        else file = new StreamWriter(hpath + "subject" + subject + "/" + pair1 + "_result.csv", true, Encoding.UTF8);
+
+        file.WriteLine((current + 1).ToString());
+        for (int i = 0; i < 3; i++)
+        {
+            Vector3 tmp = points[i].transform.position;
+            file.WriteLine(i.ToString() + "," + tmp.x.ToString() + "," + tmp.y.ToString());
+        }
+        file.Close();
+
 
         Clean(true);
         //capture all
-        filename = ".png";
+        filename = "_all.png";
         Capture(path + filename);
         await Task.Delay(100);
+
+        //capture area + hand
+        foreach (GameObject point in points) point.SetActive(false);
+        filename = "_area.png";
+        Capture(path + filename);
+        await Task.Delay(100);
+
+        //capture just area
+        hcanvas.SetActive(false);
+        filename = "_areaonly.png";
+        Capture(path + filename);
+        await Task.Delay(100);
+
 
         Clean(false);
         Reset();

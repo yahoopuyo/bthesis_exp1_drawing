@@ -22,6 +22,7 @@ public class Point : MonoBehaviour
 
     private float local_x;
     private float local_y;
+    private float local_canvas_y;
 
     private Vector3 worldPosition;
     // Start is called before the first frame update
@@ -38,6 +39,7 @@ public class Point : MonoBehaviour
         touchc = false;
         local_x = manager.local_x;
         local_y = manager.local_y;
+        local_canvas_y = manager.local_canvas_y;
     }
 
     // Update is called once per frame
@@ -55,7 +57,7 @@ public class Point : MonoBehaviour
                 UnityEngine.Debug.Log(local_x) ;
                 UnityEngine.Debug.Log(local_y) ;
                 */
-                if (mp.x < local_x && mp.y > local_y)   //左上
+                if (mp.x < local_x && mp.y > local_y && mp.y < local_canvas_y)   //左上
                 {
                     circlea.SetActive(true);
                     circlea.GetComponent<Transform>().position = worldMp;
@@ -76,8 +78,6 @@ public class Point : MonoBehaviour
                     touchc = true;
                     //UnityEngine.Debug.Log("in2");
                 }
-
-
 
                 //UnityEngine.Debug.Log(mp.x);
                 //UnityEngine.Debug.Log(mp.y);
